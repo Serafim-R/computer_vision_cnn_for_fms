@@ -1,4 +1,5 @@
 import re
+import numpy as np
 
 def objetos():
     return {"Arruelas":[], "Parafusos":[], "Porcas":[]}
@@ -130,6 +131,15 @@ def dados_slurm():
      #   print(valor)
     return iluminacao
 
+def ler_luximetro():
+    dados = []
+
+    with open("dados_iluminancia.out", 'r') as arquivo:
+        for linha in arquivo:
+            dados.append(linha.strip().split(':'))
+
+    return dados
+
 def ler_arquivo_corretos(caminho):
     dados = {'Arruelas':[], 'Parafusos':[], 'Porcas':[]}
 
@@ -197,7 +207,36 @@ def dados_obtidos():
                 dados_obtidos_final[config][key].append(str(nome2)) #veja isso daqui
 
     return dados_obtidos_final
+
+def dados_luximetro():
+    data_set = ler_luximetro()
+    lux = {
+        "Ambiente":[],
+        "Config_50-100":[], 
+        "Config_50-50":[], 
+        "Config_100-50":[], 
+        "Config_100-100":[],
+        "Config_100-0":[], 
+        "Config_R&B":[], 
+        "Config_R":[]
+    }
+
+    for i, key in enumerate(lux.keys()):
+       lista = data_set[i][1].split(',')
+       lista_num = [float(i) for i in lista]
+       med = sum(lista_num)/len(lista_num)
+       lista_num.append(med)
+       #print(lista_num)
+       lux[key] = lista_num
+
+    # for key, val in lux.items():
+    #     print(f'------{key}------')
+    #     for i in val:
+    #         print(i)
+
+    return lux
     
+# dados_luximetro()
 # dados_corretos()
 # dados_corretos_100_50()
 # dados_obtidos()
